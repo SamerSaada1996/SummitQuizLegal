@@ -43,6 +43,8 @@ for (const [file, canonical] of routes) {
   requireMatch(html, /href="\/SummitQuizLegal\/terms\/"/i, `${file}: terms navigation missing`);
   requireMatch(html, /href="\/SummitQuizLegal\/support\/"/i, `${file}: support navigation missing`);
   requireMatch(html, /src="\/SummitQuizLegal\/assets\/site\.js"/i, `${file}: local site script missing`);
+  const bilingualNavigationLabels = html.match(/data-copy-ar="[^"]+"\s+data-copy-en="[^"]+"/gi)?.length ?? 0;
+  if (bilingualNavigationLabels < 3) failures.push(`${file}: bilingual navigation labels missing`);
   forbidMatch(html, /<script\b[^>]*\bsrc="https?:\/\//i, `${file}: remote executable script is forbidden`);
   forbidMatch(html, /googletag|fundingchoices|doubleclick|google-analytics|googletagmanager|\bgtag\s*\(/i, `${file}: tracking or consent tag is forbidden`);
 }
@@ -74,6 +76,7 @@ requireMatch(support, /استعادة المشتريات/i, 'support/index.html:
 requireMatch(support, /Restore purchases/i, 'support/index.html: English purchase support missing');
 requireMatch(styles, /\[dir="rtl"\]/i, 'assets/styles.css: RTL-specific styling missing');
 requireMatch(script, /document\.documentElement\.dir/i, 'assets/site.js: document direction update missing');
+requireMatch(script, /dataset\.copyEn/i, 'assets/site.js: localized navigation update missing');
 forbidMatch(script, /fetch\s*\(|XMLHttpRequest|navigator\.sendBeacon/i, 'assets/site.js: network behavior is forbidden');
 
 if (failures.length) {
